@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 	printf("Address of a const global variable\t%p\n", &const_global_ch);
 	printf("Address of a local variable\t\t%p\n", &local_ch);
 	printf("Address of a const local variable\t%p\n", &const_local_ch);
-	printf("Address of a heap variable\t\t%p\n", &heap_ch);
+	printf("Address of a heap variable\t\t%p\n", heap_ch);
 	printf("Address of main\t\t\t\t%p\n", main);
 	printf("Address of printf\t\t\t%p\n", printf);
 
