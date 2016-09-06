@@ -14,7 +14,7 @@ ifneq ($(DEPFILES),)
 include $(DEPFILES)
 endif
 
-# if the C compiler or optimization flags change, rebuild all objects
+# when the C compiler or optimization flags change, rebuild all objects
 ifneq ($(strip $(DEP_CC)),$(strip $(CC) $(CPPFLAGS) $(CFLAGS) $(O)))
 DEP_CC := $(shell mkdir -p $(DEPSDIR); echo >$(BUILDSTAMP); echo "DEP_CC:=$(CC) $(CFLAGS) $(O)" >$(DEPSDIR)/_cc.d)
 endif
@@ -34,6 +34,10 @@ cleanasm = perl -ni -e 'print if !/^(?:\# BB|\s+\.cfi|\s+\.p2align|\s+\# =>This)
 else
 cleanasm = :
 endif
+
+# cancel implicit rules we don't want
+%: %.c
+%.o: %.c
 
 $(BUILDSTAMP):
 	@mkdir -p $(@D)

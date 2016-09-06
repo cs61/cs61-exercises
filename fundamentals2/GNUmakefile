@@ -6,10 +6,6 @@ ALLPROGRAMS = $(PROGRAMS)
 
 include ../common/rules.mk
 
-# As we're demoing undefined behavior in some ways, let us not complain
-# about uninitialized variables
-CFLAGS:=$(filter-out Wuninitialized,$(CFLAGS))
-
 %.o: %.c $(BUILDSTAMP)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPCFLAGS) $(O) -o $@ -c $<
 
