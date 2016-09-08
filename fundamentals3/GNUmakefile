@@ -1,4 +1,4 @@
-PROGRAMS = vars1 vars2 vars3 vars4 ptr struct
+PROGRAMS = ptr struct union addrspace
 
 all: $(PROGRAMS)
 
@@ -9,7 +9,7 @@ include ../common/rules.mk
 %.o: %.c $(BUILDSTAMP)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPCFLAGS) $(O) -o $@ -c $<
 
-vars: vars.o hexdump.o
+%: %.o
 	$(CC) $(CFLAGS) $(O) -o $@ $^
 
 clean:

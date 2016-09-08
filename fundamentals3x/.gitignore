@@ -4,3 +4,4 @@ membench-tcmalloc
 membench-arena
 membench-fullarena
 membench-cheat
+membench-nofree
