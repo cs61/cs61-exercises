@@ -36,13 +36,13 @@ See "membench.h" for function semantics.
 
 // A `free_chunk` was allocated by the arena, but isn't currently in
 // use. You'll likely put some bookkeeping information into such chunks.
-typedef struct {
+typedef struct free_chunk {
     // YOUR CODE HERE
 } free_chunk;
 
 // A `chunk_or_free` object is *either* an allocated chunk, *or* a
 // free chunk. That calls for a union!
-typedef union {
+typedef union chunk_or_free {
     chunk c;
     free_chunk f;
 } chunk_or_free;
@@ -54,7 +54,7 @@ typedef struct membench_group {
 
 struct membench_arena {
     membench_group first_group;
-    chunk_or_free* free_chunk;
+    free_chunk* free;
 };
 
 
@@ -62,19 +62,19 @@ membench_arena* membench_arena_new(void) {
     // An arena initially contains a single chunk, which is free.
     // TODO: Change this!
     membench_arena* arena = (membench_arena*) malloc(sizeof(membench_arena));
-    arena->free_chunk = &arena->first_group.chunks[0];
+    arena->free = &arena->first_group.chunks[0].f;
     return arena;
 }
 
 chunk* membench_alloc(membench_arena* arena) {
-    assert(arena->free_chunk != NULL);
-    chunk* result = &arena->free_chunk->c;
-    arena->free_chunk = NULL;
+    assert(arena->free != NULL);
+    chunk* result = (chunk*) arena->free; // OK because of the union
+    arena->free = NULL;
     return result;
 }
 
 void membench_free(membench_arena* arena, chunk* x) {
-    arena->free_chunk = (chunk_or_free*) x;
+    arena->free = (free_chunk*) x; // OK because of the union
 }
 
 void membench_arena_free(membench_arena* arena) {

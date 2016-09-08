@@ -2,3 +2,5 @@ membench-malloc
 membench-jemalloc
 membench-tcmalloc
 membench-arena
+membench-fullarena
+membench-cheat
