@@ -1,10 +1,10 @@
 PROGRAMS = $(patsubst mb-%.c,membench-%,$(wildcard mb-*.c))
-ifeq ($(strip $(shell ld -jemalloc 2>&1 | grep -- -ljemalloc)),)
-PROGRAMS += membench-jemalloc
-endif
-ifneq ($(wildcard /usr/lib/libtcmalloc.so.4),)
-PROGRAMS += membench-tcmalloc
-endif
+#ifeq ($(strip $(shell ld -jemalloc 2>&1 | grep -- -ljemalloc)),)
+#PROGRAMS += membench-jemalloc
+#endif
+#ifneq ($(wildcard /usr/lib/libtcmalloc.so.4),)
+#PROGRAMS += membench-tcmalloc
+#endif
 all: $(PROGRAMS)
 
 DEFS += -pthread
