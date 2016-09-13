@@ -1,10 +1,10 @@
 PROGRAMS = $(patsubst mb-%.c,membench-%,$(wildcard mb-*.c))
-#ifeq ($(strip $(shell ld -jemalloc 2>&1 | grep -- -ljemalloc)),)
-#PROGRAMS += membench-jemalloc
-#endif
-#ifneq ($(wildcard /usr/lib/libtcmalloc.so.4),)
-#PROGRAMS += membench-tcmalloc
-#endif
+ifeq ($(strip $(shell ld -ljemalloc 2>&1 | grep -- -ljemalloc)),)
+PROGRAMS += membench-jemalloc
+endif
+ifneq ($(wildcard /usr/lib/libtcmalloc.so.4),)
+PROGRAMS += membench-tcmalloc
+endif
 all: $(PROGRAMS)
 
 DEFS += -pthread
@@ -23,7 +23,7 @@ membench-tcmalloc: membench.o mb-malloc.o
 	$(CC) $(CFLAGS) $(O) -o $@ $^ /usr/lib/libtcmalloc.so.4
 
 clean:
-	rm -f *.o $(PROGRAMS)
+	rm -f *.o $(PROGRAMS) membench-jemalloc membench-tcmalloc
 	rm -rf $(DEPSDIR) *.dSYM
 
 .PHONY: all clean

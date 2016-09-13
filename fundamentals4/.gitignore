@@ -1,0 +1,6 @@
+add
+addu
+fib
+membench-malloc
+membench-arena
+membench-arena[0-9]

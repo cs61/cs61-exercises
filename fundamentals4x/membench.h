@@ -33,8 +33,7 @@ void membench_free(membench_arena* arena, chunk* x);
 //    Clean up the arena and free its memory.
 //
 //    REQUIREMENT: Before `membench_arena_destroy(arena)` is called, all
-//    chunks previously returned by `membench_alloc(arena)` have been
-//    freed.
+//    chunks previously returned by `membench_alloc(arena)` have been freed.
 void membench_arena_destroy(membench_arena* arena);
 
 #endif

@@ -4,7 +4,7 @@
 
 static chunk the_only_chunk;
 
-membench_arena* membench_arena_new(void) {
+membench_arena* membench_arena_create(void) {
     return NULL;
 }
 
@@ -17,6 +17,6 @@ void membench_free(membench_arena* arena, chunk* x) {
     (void) arena, (void) x;
 }
 
-void membench_arena_free(membench_arena* arena) {
+void membench_arena_destroy(membench_arena* arena) {
     (void) arena;
 }
