@@ -1,14 +1,23 @@
 # are we using clang?
 ISCLANG := $(shell if $(CC) --version | grep LLVM >/dev/null; then echo 1; else echo 0; fi)
 
-CC += -std=gnu11 -W -Wall -Wshadow
-CFLAGS ?= -g $(DEFS)
+CFLAGS ?= -std=gnu11 -W -Wall -Wshadow -g $(DEFS)
 O ?= -O3
 ifeq ($(filter 0 1 2 3 s,$(O)),$(strip $(O)))
 override O := -O$(O)
 endif
 ifeq ($(SANITIZE),1)
-CC += -fsanitize=address -fsanitize=undefined
+ifeq ($(strip $(shell $(CC) -fsanitize=address -x c -E /dev/null 2>&1 | grep sanitize=)),)
+CFLAGS += -fsanitize=address
+else
+$(info ** WARNING: Your C compiler does not support `-fsanitize=address`.)
+endif
+ifeq ($(strip $(shell $(CC) -fsanitize=undefined -x c -E /dev/null 2>&1 | grep sanitize=)),)
+CFLAGS += -fsanitize=undefined
+else
+$(info ** WARNING: Your C compiler does not support `-fsanitize=undefined`.)
+$(info ** You may want to install gcc-4.9 or greater.)
+endif
 endif
 
 # these rules ensure dependencies are created
@@ -44,6 +53,7 @@ endif
 # cancel implicit rules we don't want
 %: %.c
 %.o: %.c
+%: %.o
 
 $(BUILDSTAMP):
 	@mkdir -p $(@D)

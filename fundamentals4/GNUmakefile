@@ -16,6 +16,9 @@ add: add.o
 addu: addu.o
 	$(CC) $(CFLAGS) $(O) -o $@ $^
 
+fib: fib.o
+	$(CC) $(CFLAGS) $(O) -o $@ $^
+
 membench-%: membench.o mb-%.o
 	$(CC) $(CFLAGS) $(O) -o $@ $^
 
