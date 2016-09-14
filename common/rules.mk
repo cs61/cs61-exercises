@@ -18,6 +18,11 @@ else
 $(info ** WARNING: Your C compiler does not support `-fsanitize=undefined`.)
 $(info ** You may want to install gcc-4.9 or greater.)
 endif
+ifeq ($(ISCLANG),0)
+ifeq ($(wildcard /usr/bin/gold),/usr/bin/gold)
+CFLAGS += -fuse-ld=gold
+endif
+endif
 endif
 
 # these rules ensure dependencies are created
