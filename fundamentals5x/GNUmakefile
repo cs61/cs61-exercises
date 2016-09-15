@@ -1,6 +1,9 @@
 PROGRAMS = nogcbench gcbench
 all: $(PROGRAMS)
 
+# More garbage gets cleaned up more reliably when optimization is off.
+O ?= 0
+
 include ../common/rules.mk
 
 %.o: %.c $(BUILDSTAMP)
