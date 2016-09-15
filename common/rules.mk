@@ -1,7 +1,7 @@
 # are we using clang?
 ISCLANG := $(shell if $(CC) --version | grep LLVM >/dev/null; then echo 1; else echo 0; fi)
 
-CFLAGS ?= -std=gnu11 -W -Wall -Wshadow -g $(DEFS)
+CFLAGS := -std=gnu11 -W -Wall -Wshadow -g $(DEFS) $(CFLAGS)
 O ?= -O3
 ifeq ($(filter 0 1 2 3 s,$(O)),$(strip $(O)))
 override O := -O$(O)
