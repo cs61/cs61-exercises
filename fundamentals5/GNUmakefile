@@ -1,6 +1,7 @@
 PROGRAMS = fib nogcbench gcbench
 all: $(PROGRAMS)
 
+O ?= 0
 include ../common/rules.mk
 
 %.o: %.c $(BUILDSTAMP)

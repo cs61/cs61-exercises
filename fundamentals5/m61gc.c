@@ -94,6 +94,7 @@ void m61_print_allocations(void) {
         printf("  #%zu: %p: %zu bytes\n", i, allocs[i].ptr, allocs[i].sz);
 }
 
+static void mark_allocations(const char* base, size_t sz) __attribute__((used));
 static void mark_allocations(const char* base, size_t sz) {
     (void) base, (void) sz;
 }
