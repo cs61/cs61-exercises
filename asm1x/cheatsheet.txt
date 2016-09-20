@@ -1,0 +1,63 @@
+CS61 x86-64 Assembly Cheat Sheat
+
+A. Registers
+A1. There are a total of <HOWMANY> general purpose (GP) registers.
+A2. There are <HOWMANY> GP registers with symbolic names.
+A3. They are: <LIST ALL THE NAMED REGISTERS>
+A4. There are <HOWMANY> GP registers with number names.
+A5. They are: <DESCRIBE/LIST ALL THE NUMBERED REGISTERS>
+A6. rip is: <DESCRIBE IT>
+A7. rsp is: <DESCRIBE IT>
+A8. rbp is: <DESCRIBE IT>
+
+B. Parameter passing
+B1. The first argument to a function is passed in register <NAME>.
+B2. The second argument to a function is passed in register <NAME>.
+B3. The third argument to a function is passed in register <NAME>.
+B4. The fourth argument to a function is passed in register <NAME>.
+B5. The fifth argument to a function is passed in register <NAME>.
+B6. The sixth argument to a function is passed in register <NAME>.
+B7. The seventh argument to a function is passed <DESCRIBE HOW>.
+
+C. Addressing modes
+C1. $N (for N a number) means:
+C2. The expression %REG (for REG a register) means:
+C3. (%REG) means:
+C4. (%REG, %REG) means:
+C5. (%REG, %REG, N) for N=1, 2, 4 or 8 means:
+C6. N(<MODE>) for addressing mode C3, C4, or C5 means:
+C7. lea<TYPE> (for TYPE one of b,w,l,q) means:
+
+D. x86 flags
+For each of the following flags, write down what it means for the flag
+to be set:
+D1. SF
+D2. CF
+D3. ZF
+D4. OF
+
+E. Instructions whose only purpose is to set flag values:
+Explain how each instruction sets the flag registers.
+E1. cmp operand1, operand2
+E2. test operand1, operand2
+
+F. Jump Instructions
+For each jump instruction below, write the expression describing when
+the jump will be taken. You will undoubtedly find it useful to
+describe this both in terms of which flags you must check but also,
+assuming that the previous operation were a cmp or test instruction,
+what relationship the operands of the previous instruction have, e.g.,
+op1 > op2, or op1 != 0, or whatever applies.
+
+F1. je
+F2. jne
+F3. js
+F4. jns
+F5. jg
+F6. jge
+F7. jl
+F8. jle
+F9. ja
+F10. jae
+F11. jb
+F12. jbe
