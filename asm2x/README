@@ -1,0 +1,6 @@
+In-class exercise to accompany introduction of addressing modes in
+assembly language.
+
+We provide snippets of assembly that manipulate various fundamental and
+compound types in assembly language and ask students to write the C code
+to generate the given assembly.
