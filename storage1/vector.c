@@ -6,7 +6,7 @@
 // Numset implementation that uses a smart array data structure.
 // This code reallocates the array much less frequently than array.c does.
 // It uses the "vector pattern" explained on the C Patterns page:
-// http://cs61.seas.harvard.edu/wiki/2013/Patterns
+// http://cs61.seas.harvard.edu/wiki/2016/Patterns
 
 struct numset {
     unsigned* v;
@@ -50,11 +50,11 @@ void numset_add(numset* s, unsigned value) {
     ++s->size;
 }
 
-unsigned numset_remove_index(numset* s, unsigned index) {
-    if (index < s->size) {
-        unsigned value = s->v[index];
-        memmove(&s->v[index], &s->v[index + 1],
-                sizeof(unsigned) * (s->size - index - 1));
+unsigned numset_remove_index(numset* s, unsigned pos) {
+    if (pos < s->size) {
+        unsigned value = s->v[pos];
+        memmove(&s->v[pos], &s->v[pos + 1],
+                sizeof(unsigned) * (s->size - pos - 1));
         --s->size;
         return value;
     } else

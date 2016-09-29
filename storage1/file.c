@@ -59,7 +59,7 @@ void numset_add(numset* s, unsigned value) {
     fclose(out);
 }
 
-unsigned numset_remove_index(numset* s, unsigned index) {
+unsigned numset_remove_index(numset* s, unsigned pos) {
     (void) s; // avoid uninitialized-variable warning
 
     // rename old file to backup
@@ -73,17 +73,17 @@ unsigned numset_remove_index(numset* s, unsigned index) {
 
     // read values from old file until the right position;
     // then write value
-    unsigned cur_index = 0, value = 0;
+    unsigned cur_pos = 0, value = 0;
     while (1) {
         unsigned x;
         r = fscanf(in, "%u", &x);
         if (r == 0 || r == EOF)
             break;
-        if (index == cur_index)
+        if (pos == cur_pos)
             value = x;
-        if (index != cur_index)
+        if (pos != cur_pos)
             fprintf(out, "%u\n", x);
-        ++cur_index;
+        ++cur_pos;
     }
 
     // close files

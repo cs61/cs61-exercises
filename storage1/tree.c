@@ -12,7 +12,7 @@
 
 typedef struct node {
     unsigned value;
-    bool color;
+    int color;
     struct node* child[2];
     struct node* parent;
     unsigned count;
@@ -31,11 +31,11 @@ static inline void tree_free(node* t) {
     free(t);
 }
 
-static inline bool tree_isred(node* t) {
+static inline int tree_isred(node* t) {
     return t && t->color;
 }
 
-static inline bool tree_children_same_color(node* t) {
+static inline int tree_children_same_color(node* t) {
     return tree_isred(t->child[0]) == tree_isred(t->child[1]);
 }
 
@@ -290,18 +290,18 @@ void numset_add(numset* s, unsigned value) {
     tree_insert_node(&s->root, new_node);
 }
 
-unsigned numset_remove_index(numset* s, unsigned index) {
+unsigned numset_remove_index(numset* s, unsigned pos) {
     node* t = s->root;
     while (t) {
-        unsigned t_index = tree_count(t->child[0]);
-        if (t_index > index)
+        unsigned t_pos = tree_count(t->child[0]);
+        if (t_pos > pos)
             t = t->child[0];
-        else if (t_index == index) {
+        else if (t_pos == pos) {
             unsigned value = t->value;
             tree_remove_node(&s->root, t);
             return value;
         } else {
-            index -= t_index + 1;
+            pos -= t_pos + 1;
             t = t->child[1];
         }
     }

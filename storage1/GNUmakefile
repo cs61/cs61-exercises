@@ -15,7 +15,7 @@ numset-%: numset.o %.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-	rm -f $(ALLPROGRAMS) *.o
+	rm -f *.o $(ALLPROGRAMS)
 	rm -rf $(DEPSDIR) *.dSYM
 
 .PHONY: all clean

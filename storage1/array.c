@@ -39,11 +39,11 @@ void numset_add(numset* s, unsigned value) {
     ++s->size;
 }
 
-unsigned numset_remove_index(numset* s, unsigned index) {
-    if (index < s->size) {
-        unsigned value = s->v[index];
-        memmove(&s->v[index], &s->v[index + 1],
-                sizeof(unsigned) * (s->size - index - 1));
+unsigned numset_remove_index(numset* s, unsigned pos) {
+    if (pos < s->size) {
+        unsigned value = s->v[pos];
+        memmove(&s->v[pos], &s->v[pos + 1],
+                sizeof(unsigned) * (s->size - pos - 1));
         --s->size;
         return value;
     } else

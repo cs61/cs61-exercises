@@ -39,13 +39,13 @@ void numset_add(numset* s, unsigned value) {
         s->head = n;
 }
 
-unsigned numset_remove_index(numset* s, unsigned index) {
+unsigned numset_remove_index(numset* s, unsigned pos) {
     node* prev = NULL;
     node* trav = s->head;
-    while (trav && index != 0) {
+    while (trav && pos != 0) {
         prev = trav;
         trav = trav->next;
-        --index;
+        --pos;
     }
 
     if (trav) {
