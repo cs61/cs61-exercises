@@ -30,7 +30,7 @@ void die(const char* file) {
 
 int main(int argc, char* argv[]) {
     if (argc <= 4) {
-        fprintf(stderr, "Usage: mysum-file FILE OFFSET A B\n\
+        fprintf(stderr, "Usage: addin FILE OFFSET A B\n\
     Prints A + B.\n");
         exit(1);
     }
