@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 	// We're going to open a file for writing and
 	// loop writing our buffer to it (via stdio),
 	// sleeping between each write.
-	fp = fopen(datafile, "w+");
+	fp = fopen(datafile, "a+");
 	if (fp == NULL) {
 		perror("fopen");
 		exit(1);
