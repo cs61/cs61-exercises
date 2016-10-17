@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
 	// We're going to open a file for mmapping and then we're going to
 	// loop updating our character.
-	fp = fopen(datafile, "r");
+	fp = fopen(datafile, "r+");
 	if (fp == NULL) {
 		perror("open");
 		exit(1);
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 		} else {
 			// Pick an offset and write it using stdio.
 			off = random() % MMAP_FILE_SIZE;
-			if (fseek(fp, off, SEEK_SET) != off ||
+			if (fseek(fp, off, SEEK_SET) != 0 ||
 			    fwrite(&printchar, 1, 1, fp) != 1) {
 				perror("writer failed\n");
 				exit(1);
