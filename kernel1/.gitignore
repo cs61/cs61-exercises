@@ -1,0 +1,12 @@
+allocate
+allocaterandomtouch
+allocatetouch
+callocate
+data
+map
+maprandomtouch
+maptouch
+mapwrite
+read
+readrandomtouch
+readtouch
