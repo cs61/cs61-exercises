@@ -38,6 +38,11 @@ void kernel(void) {
     hardware_init();
     console_clear();
 
+    // Wait for a key
+    console_printf(CPOS(0, 0), 0x700, "Press any key to continue");
+    while (check_keyboard() < 0)
+        /* spin */;
+
     // Set up process descriptors
     memset(processes, 0, sizeof(processes));
     for (pid_t i = 0; i < NPROC; i++) {
@@ -47,7 +52,7 @@ void kernel(void) {
 
     for (pid_t i = 1; i <= 2; ++i) {
         // Load the process application code and data into memory,
-        // set up its %eip and %esp, and mark it runnable.
+        // set up its %rip and %rsp, and mark it runnable.
         process_init(&processes[i], PROCINIT_ALLOW_PROGRAMMED_IO);
         int r = program_load(&processes[i], i - 1);
         assert(r >= 0);

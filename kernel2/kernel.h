@@ -142,8 +142,8 @@ int keyboard_readc(void);
 
 // check_keyboard
 //    Check for the user typing a control key. Control-C or 'q' exit
-//    the virtual machine.
-void check_keyboard(void);
+//    the virtual machine. Returns key typed or -1 for no key.
+int check_keyboard(void);
 
 
 // process_init(p, flags)
