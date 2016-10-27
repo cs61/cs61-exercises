@@ -684,13 +684,14 @@ int error_printf(int cpos, int color, const char* format, ...) {
 
 
 // check_keyboard
-//    Check for the user typing a control key. Control-C or 'q' exit the
-//    virtual machine.
+//    Check for the user typing a control key. Control-C or 'q' exit
+//    the virtual machine. Returns key typed or -1 for no key.
 
-void check_keyboard(void) {
+int check_keyboard(void) {
     int c = keyboard_readc();
     if (c == 0x03 || c == 'q')
         poweroff();
+    return c;
 }
 
 
