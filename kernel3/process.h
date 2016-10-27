@@ -32,12 +32,27 @@ static inline void sys_yield(void) {
                   : "cc", "memory");
 }
 
-// sys_read_proc
-//    Read data from the kernel's `struct proc` for this process.
-static inline ssize_t sys_read_proc(void* buf, off_t off, size_t sz) {
+// sys_read_ramdisk
+//    Read data from the RAMdisk at a given offset.
+static inline ssize_t sys_read_ramdisk(void* buf,
+                                       off_t off, size_t sz) {
     ssize_t result;
     asm volatile ("int %1" : "=a" (result)
-                  : "i" (INT_SYS_READ_PROC),
+                  : "i" (INT_SYS_READ_RAMDISK),
+                    "D" /* %rdi */ (buf),
+                    "S" /* %rsi */ (off),
+                    "d" /* %rdx */ (sz)
+                  : "cc", "memory");
+    return result;
+}
+
+// sys_write_ramdisk
+//    Read data from the RAMdisk at a given offset.
+static inline ssize_t sys_write_ramdisk(const void* buf,
+                                        off_t off, size_t sz) {
+    ssize_t result;
+    asm volatile ("int %1" : "=a" (result)
+                  : "i" (INT_SYS_READ_RAMDISK),
                     "D" /* %rdi */ (buf),
                     "S" /* %rsi */ (off),
                     "d" /* %rdx */ (sz)

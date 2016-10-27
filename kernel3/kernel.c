@@ -25,6 +25,8 @@ static proc processes[NPROC];   // array of process descriptors
                                 // Note that `processes[0]` is never used.
 proc* current;                  // pointer to currently executing proc
 
+static char ramdisk[16];        // memory representing a RAM disk
+
 void schedule(void);
 void run(proc* p) __attribute__((noreturn));
 
@@ -102,12 +104,18 @@ void exception(x86_64_registers* reg) {
         break;  /* will not be reached */
 
 
-    case INT_SYS_READ_PROC: {
+    case INT_SYS_READ_RAMDISK:
+    case INT_SYS_WRITE_RAMDISK: {
         char* buf = (char*) current->p_registers.reg_rdi;
         uint32_t off = current->p_registers.reg_rsi;
         uint32_t sz = current->p_registers.reg_rdx;
-        memcpy(buf, ((char*) current) + off, sz);
-        current->p_registers.reg_rax = sz;
+        if (current->p_registers.reg_intno == INT_SYS_READ_RAMDISK) {
+            memcpy(buf, ramdisk + off, sz);
+            current->p_registers.reg_rax = sz;
+        } else {
+            memcpy(ramdisk + off, buf, sz);
+            current->p_registers.reg_rax = sz;
+        }
         break;
     }
 
