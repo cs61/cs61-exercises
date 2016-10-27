@@ -25,8 +25,6 @@ static proc processes[NPROC];   // array of process descriptors
                                 // Note that `processes[0]` is never used.
 proc* current;                  // pointer to currently executing proc
 
-static char ramdisk[16];        // memory representing a RAM disk
-
 void schedule(void);
 void run(proc* p) __attribute__((noreturn));
 
@@ -37,6 +35,7 @@ void run(proc* p) __attribute__((noreturn));
 void kernel(void) {
     hardware_init();
     console_clear();
+    timer_init(1000);
 
     // Wait for a key
     console_printf(CPOS(0, 0), 0x700, "Press any key to continue");
@@ -53,7 +52,7 @@ void kernel(void) {
     for (pid_t i = 1; i <= 2; ++i) {
         // Load the process application code and data into memory,
         // set up its %rip and %rsp, and mark it runnable.
-        process_init(&processes[i], PROCINIT_ALLOW_PROGRAMMED_IO);
+        process_init(&processes[i], 0);
         int r = program_load(&processes[i], i - 1);
         assert(r >= 0);
         processes[i].p_registers.reg_rsp = PROC_START_ADDR + PROC_SIZE * i;
@@ -112,6 +111,16 @@ void exception(x86_64_registers* reg) {
         break;
     }
 
+
+    case INT_TIMER:
+        schedule();             /* does not return */
+
+    case INT_GPF:
+        // process caused a fault; kill it
+        error_printf(CPOS(24, 0), 0xC000, "Process %d GPF (rip=%p)!\n",
+                     current->p_pid, current->p_registers.reg_rip);
+        current->p_state = P_BLOCKED;
+        break;
 
     default:
         panic("Unexpected exception %d!\n", reg->reg_intno);
