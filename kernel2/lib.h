@@ -30,11 +30,11 @@ typedef unsigned long uint64_t;
 typedef long intptr_t;                // ints big enough to hold pointers
 typedef unsigned long uintptr_t;
 
-typedef uint64_t size_t;              // sizes and offsets
-typedef int64_t ssize_t;
-typedef int64_t off_t;
+typedef unsigned long size_t;         // sizes and offsets
+typedef long ssize_t;
+typedef long off_t;
 
-typedef int32_t pid_t;                // process IDs
+typedef int pid_t;                    // process IDs
 
 void* memcpy(void* dst, const void* src, size_t n);
 void* memmove(void* dst, const void* src, size_t n);
