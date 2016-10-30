@@ -1,0 +1,7 @@
+*~
+core*
+log.txt
+os[0-9]*.img
+obj
+weensyos1
+weensyos1.tar.gz
