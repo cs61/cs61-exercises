@@ -196,35 +196,34 @@ void exception(x86_64_registers* reg) {
         schedule();
 
     case INT_GPF:
-        console_printf(CPOS(24, 0), 0xC000, "Process %d GPF (rip=%p)!\n",
-                       current->p_pid, current->p_registers.reg_rip);
+        error_printf(CPOS(23, 0), 0xC000, "Process %d GPF!\n", current->p_pid);
         current->p_state = P_BLOCKED;
         break;
 
     case INT_PAGEFAULT: {
-        uintptr_t faultaddr = rcr2();
-        const char* who = reg->reg_err & PFERR_USER
-            ? "user" : "kernel";
+        uintptr_t addr = rcr2();
         const char* operation = reg->reg_err & PFERR_WRITE
-            ? "write" : "read";
+                ? "write" : "read";
         const char* problem = reg->reg_err & PFERR_PRESENT
-            ? "protection problem" : "missing page";
+                ? "protection problem" : "missing page";
+        char name[20];
+        if (reg->reg_err & PFERR_USER)
+            snprintf(name, sizeof(name), "Process %d", current->p_pid);
+        else
+            strcpy(name, "Kernel");
 
-        if (reg->reg_err & PFERR_USER) {
-            console_printf(CPOS(23, 0), 0xC000,
-                           "process %d page fault for %p (%s %s, rip=%p)!\n",
-                           current->p_pid, faultaddr, operation, problem,
-                           reg->reg_rip);
-            current->p_state = P_BLOCKED;
-        } else
-            panic("%s page fault for %p (%s %s, rip=%p)!\n",
-                  who, faultaddr, operation, problem, reg->reg_rip);
+        error_printf(CPOS(23, 0), 0xC000,
+                     "%s page fault for %p (%s %s, rip=%p)!\n",
+                     name, addr, operation, problem, reg->reg_rip);
+        if (!(reg->reg_err & PFERR_USER))
+            panic("Kernel page fault");
+        current->p_state = P_BLOCKED;
         break;
     }
 
     default:
-        panic("Unexpected exception %d!\n", current->p_registers.reg_intno);
-        break;  /* will not be reached */
+        panic("Unexpected exception %d!\n", reg->reg_intno);
+        break;                  /* will not be reached */
 
     }
 
@@ -273,7 +272,9 @@ void run(proc* p) {
     assert(p->p_state == P_RUNNABLE);
     current = p;
 
+    // Load the process's current pagetable
     lcr3((uintptr_t) p->p_pagetable);
+
     // This function is defined in k-exception.S. It restores the process's
     // registers then jumps back to user mode.
     exception_return(&p->p_registers);
