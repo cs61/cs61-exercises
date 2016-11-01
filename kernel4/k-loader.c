@@ -73,7 +73,12 @@ static int program_load_segment(proc* p, const elf_program* ph,
     // ensure new memory mappings are active
     lcr3((uintptr_t) p->p_pagetable);
 
+    // copy data from executable image into process memory
     memcpy((uint8_t*) va, src, end_file - va);
     memset((uint8_t*) end_file, 0, end_mem - end_file);
+
+    // restore kernel pagetable
+    lcr3((uintptr_t) kernel_pagetable);
+
     return 0;
 }

@@ -26,7 +26,7 @@ CFLAGS := $(CFLAGS) \
 	-std=gnu11 -m64 -mcmodel=large \
 	-mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-3dnow \
 	-ffreestanding -fno-omit-frame-pointer \
-	-Wall -Wno-format -Wno-unused -Werror -gdwarf-2
+	-Wall -W -Wshadow -Wno-format -Wno-unused -Werror -gdwarf-2
 # Include -fno-stack-protector if the option exists.
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 DEPCFLAGS = -MD -MF $(DEPSDIR)/$*.d -MP
@@ -61,7 +61,7 @@ INFERRED_QEMU := $(shell if which qemu-system-x86_64 2>/dev/null | grep ^/ >/dev
 	elif grep 16 /etc/fedora-release >/dev/null 2>&1; \
 	then echo qemu; else echo qemu-system-x86_64; fi)
 QEMU ?= $(INFERRED_QEMU)
-QEMUOPT	= -net none -parallel file:log.txt
+QEMUOPT	= -net none -parallel file:log.txt -no-reboot
 QEMUCONSOLE ?= $(if $(DISPLAY),,1)
 QEMUDISPLAY = $(if $(QEMUCONSOLE),console,graphic)
 

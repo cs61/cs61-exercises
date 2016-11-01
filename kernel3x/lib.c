@@ -185,7 +185,8 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
             length = 1;
             ++format;
             goto again;
-        case 'd': {
+        case 'd':
+        case 'i': {
             long x = length ? va_arg(val, long) : va_arg(val, int);
             int negative = x < 0 ? FLAG_NEGATIVE : 0;
             num = negative ? -x : x;

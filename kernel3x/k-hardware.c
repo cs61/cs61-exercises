@@ -715,12 +715,12 @@ void panic(const char* format, ...) {
 
     if (format) {
         // Print panic message to both the screen and the log
-        int cpos = error_printf(CPOS(23, 0), 0xC000, "PANIC: ");
+        int cpos = error_printf(CPOS(24, 0), 0xC000, "PANIC: ");
         cpos = error_vprintf(cpos, 0xC000, format, val);
         if (CCOL(cpos))
             error_printf(cpos, 0xC000, "\n");
     } else
-        error_printf(CPOS(23, 0), 0xC000, "PANIC");
+        error_printf(CPOS(24, 0), 0xC000, "PANIC");
 
     va_end(val);
     fail();
