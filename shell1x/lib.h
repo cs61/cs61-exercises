@@ -39,6 +39,7 @@ typedef int pid_t;                    // process IDs
 void* memcpy(void* dst, const void* src, size_t n);
 void* memmove(void* dst, const void* src, size_t n);
 void* memset(void* s, int c, size_t n);
+void* memchr(const void* s, int c, size_t n);
 size_t strlen(const char* s);
 size_t strnlen(const char* s, size_t maxlen);
 char* strcpy(char* dst, const char* src);
@@ -97,16 +98,8 @@ void panic(const char* format, ...) __attribute__((noinline, noreturn));
 #define INT_SYS_PANIC           (INT_SYS + 0)
 #define INT_SYS_GETPID          (INT_SYS + 1)
 #define INT_SYS_YIELD           (INT_SYS + 2)
-#define INT_SYS_PAGE_ALLOC      (INT_SYS + 3)
-#define INT_SYS_FORK            (INT_SYS + 4)
-
-
-// Process address values
-
-// First application-accessible address
-#define PROC_START_ADDR  0x100000
-// Lowest allowed application stack address
-#define PROC_STACK_LIMIT 0x2E0000
+#define INT_SYS_PIPEWRITE       (INT_SYS + 3)
+#define INT_SYS_PIPEREAD        (INT_SYS + 4)
 
 
 // Console printing
@@ -120,7 +113,13 @@ void panic(const char* format, ...) __attribute__((noinline, noreturn));
 extern uint16_t console[CONSOLE_ROWS * CONSOLE_COLUMNS];
 
 // current position of the cursor (80 * ROW + COL)
-extern int cursorpos;
+extern volatile int cursorpos;
+
+// number of ticks (timer interrupts) per second
+#define HZ 100
+
+// number of ticks since boot
+extern volatile unsigned long ticks;
 
 // console_clear
 //    Erases the console and moves the cursor to the upper left (CPOS(0, 0)).

@@ -1,4 +1,4 @@
-IMAGE = os02.img
+IMAGE = pipeos.img
 all: $(IMAGE)
 
 # '$(V)' controls whether the lab makefiles print verbose commands (the
@@ -26,17 +26,13 @@ endif
 BOOT_OBJS = $(OBJDIR)/bootstart.o $(OBJDIR)/boot.o
 
 KERNEL_OBJS = $(OBJDIR)/k-exception.o $(OBJDIR)/kernel.o \
-	$(OBJDIR)/k-hardware.o $(OBJDIR)/k-loader.o $(OBJDIR)/lib.o \
-	$(OBJDIR)/k-malloc.o \
-	$(if $(wildcard k-secret.c),$(OBJDIR)/k-secret.o,) 
+	$(OBJDIR)/k-hardware.o $(OBJDIR)/k-loader.o $(OBJDIR)/lib.o
 KERNEL_LINKER_FILES = link/kernel.ld link/shared.ld
 
-PROCESS_BINARIES = $(OBJDIR)/p-alloc $(OBJDIR)/p-recurse $(OBJDIR)/p-fork \
-	$(OBJDIR)/p-panic
+PROCESS_BINARIES = $(OBJDIR)/p-pipewriter $(OBJDIR)/p-pipereader
 PROCESS_BINARIES_FULL = $(patsubst %,%.full,$(PROCESS_BINARIES))
 PROCESS_LIB_OBJS = $(OBJDIR)/lib.o $(OBJDIR)/process.o
 PROCESS_OBJS = $(patsubst %,%.o,$(PROCESS_BINARIES)) $(PROCESS_LIB_OBJS)
-PROCESS_LINKER_FILES = link/process.ld link/shared.ld
 
 
 # Generic rules for making object files
@@ -60,8 +56,9 @@ $(OBJDIR)/kernel.full: $(KERNEL_OBJS) $(PROCESS_BINARIES) $(KERNEL_LINKER_FILES)
 	$(call link,-T $(KERNEL_LINKER_FILES) -nostdlib -o $@ $(KERNEL_OBJS) -b binary $(PROCESS_BINARIES),LINK)
 
 $(PROCESS_BINARIES_FULL): \
-$(OBJDIR)/p-%.full: $(OBJDIR)/p-%.o $(PROCESS_LIB_OBJS) $(PROCESS_LINKER_FILES)
-	$(call link,-T $(PROCESS_LINKER_FILES) -nostdlib -o $@ $< $(PROCESS_LIB_OBJS),LINK)
+$(OBJDIR)/p-%.full: $(OBJDIR)/p-%.o $(PROCESS_LIB_OBJS) \
+		link/p-%.ld link/shared.ld
+	$(call link,-T link/p-$*.ld link/shared.ld -nostdlib -o $@ $< $(PROCESS_LIB_OBJS),LINK)
 
 $(OBJDIR)/%: $(OBJDIR)/%.full
 	$(call run,$(OBJDUMP) -S $< >$@.asm)
@@ -77,15 +74,7 @@ $(OBJDIR)/bootsector: $(BOOT_OBJS) link/boot.ld link/shared.ld
 $(OBJDIR)/mkbootdisk: build/mkbootdisk.c $(BUILDSTAMPS)
 	$(call run,$(HOSTCC) -I. -o $(OBJDIR)/mkbootdisk,HOSTCOMPILE,build/mkbootdisk.c)
 
-$(OBJDIR)/k-binaries.c: GNUmakefile build/mkkbinaries.sh
-	$(call run,$(SHELL) build/mkkbinaries.sh -c $(PROCESS_BINARIES) >,CREATE,$@)
-$(OBJDIR)/k-binaries.h: GNUmakefile build/mkkbinaries.sh
-	$(call run,$(SHELL) build/mkkbinaries.sh -h $(PROCESS_BINARIES) >,CREATE,$@)
-$(OBJDIR)/k-loader.o: $(OBJDIR)/k-binaries.c
-$(OBJDIR)/k-malloc.o: $(OBJDIR)/k-binaries.c
-$(OBJDIR)/kernel.o $(OBJDIR)/k-hardware.o: $(OBJDIR)/k-binaries.h
-
-os02.img: $(OBJDIR)/mkbootdisk $(OBJDIR)/bootsector $(OBJDIR)/kernel
+pipeos.img: $(OBJDIR)/mkbootdisk $(OBJDIR)/bootsector $(OBJDIR)/kernel
 	$(call run,$(OBJDIR)/mkbootdisk $(OBJDIR)/bootsector $(OBJDIR)/kernel > $@,CREATE $@)
 
 

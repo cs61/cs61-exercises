@@ -14,7 +14,8 @@
 typedef enum procstate {
     P_FREE = 0,                         // free slot
     P_RUNNABLE,                         // runnable process
-    P_BLOCKED                           // blocked process
+    P_BLOCKED,                          // blocked process
+    P_BROKEN                            // faulted process
 } procstate_t;
 
 // Process descriptor type
@@ -22,7 +23,6 @@ typedef struct proc {
     pid_t p_pid;                        // process ID
     x86_64_registers p_registers;       // process's current registers
     procstate_t p_state;                // process state (see above)
-    x86_64_pagetable* p_pagetable;      // process's page table
 } proc;
 
 #define NPROC 16                // maximum number of processes
@@ -33,13 +33,16 @@ typedef struct proc {
 // Top of the kernel stack
 #define KERNEL_STACK_TOP        0x80000
 
+// First application-accessible address
+#define PROC_START_ADDR         0x100000
+
 // Physical memory size
-#define MEMSIZE_PHYSICAL        0x200000
+#define MEMSIZE_PHYSICAL        0x400000
 // Number of physical pages
 #define NPAGES                  (MEMSIZE_PHYSICAL / PAGESIZE)
 
 // Virtual memory size
-#define MEMSIZE_VIRTUAL         0x300000
+#define MEMSIZE_VIRTUAL         0x400000
 
 // Hardware interrupt numbers
 #define INT_HARDWARE            32
@@ -99,14 +102,6 @@ vamapping virtual_memory_lookup(x86_64_pagetable* pagetable, uintptr_t va);
 //    Returns non-zero iff `pa` is a reserved physical address.
 int physical_memory_isreserved(uintptr_t pa);
 
-// kmalloc(size_t sz) -- kernel malloc of sz bytes
-// kfree(void *v) -- kernel free
-void *kmalloc(size_t sz);
-void kfree(void *v);
-
-// Malloc test routine
-int testmalloc(void);
-
 // poweroff
 //    Turn off the virtual machine.
 void poweroff(void) __attribute__((noreturn));
@@ -163,22 +158,11 @@ void process_init(proc* p, int flags);
 
 // program_load(p, programnumber)
 //    Load the code corresponding to program `programnumber` into the process
-//    `p` and set `p->p_registers.reg_eip` to its entry point. Calls
-//    `physical_page_alloc` to allocate virtual memory for `p` as required.
-//    Returns 0 on success and -1 on failure (e.g. out-of-memory). `allocator`
-//    is passed to `virtual_memory_map`.
-int program_load(proc* p, int programnumber,
-                 x86_64_pagetable* (*allocator)(void));
+//    `p` and set `p->p_registers.reg_eip` to its entry point.
+//    Assumes memory for `p` is already allocated and mapped.
+//    Returns 0 on success and -1 on failure (e.g. out-of-memory).
+int program_load(proc* p, int programnumber);
 
-// page_alloc_unused
-//    Allocate an unused physical page, increment its reference count, and
-//    return its physical address (which is also its virtual address in the
-//    kernel_pagedir). Returns 0 on failure.
-uintptr_t page_alloc_unused(void);
-
-// page_unalloc
-//    Free an allocated page
-void page_unalloc(uintptr_t addr);
 
 // log_printf, log_vprintf
 //    Print debugging messages to the host's `log.txt` file. We run QEMU

@@ -1,6 +1,5 @@
 #include "kernel.h"
 #include "lib.h"
-#include "obj/k-binaries.h"
 
 // k-hardware.c
 //
@@ -685,37 +684,12 @@ int error_printf(int cpos, int color, const char* format, ...) {
 
 
 // check_keyboard
-//    Check for the user typing a control key. 'a' through 'd' cause a soft
-//    reboot where the kernel runs a different program.
-//    Control-C or 'q' exit the virtual machine. Returns key typed or -1
-//    for no key.
+//    Check for the user typing a control key. Control-C or 'q' exit
+//    the virtual machine. Returns key typed or -1 for no key.
 
 int check_keyboard(void) {
     int c = keyboard_readc();
-    if (c >= 'a' && c < 'a' + WEENSYOS_NBINARIES) {
-        // Install a temporary page table to carry us through the
-        // process of reinitializing memory. This replicates work the
-        // bootloader does.
-        x86_64_pagetable* pt = (x86_64_pagetable*) 0x8000;
-        memset(pt, 0, PAGESIZE * 3);
-        pt[0].entry[0] = 0x9000 | PTE_P | PTE_W | PTE_U;
-        pt[1].entry[0] = 0xA000 | PTE_P | PTE_W | PTE_U;
-        pt[2].entry[0] = PTE_P | PTE_W | PTE_U | PTE_PS;
-        lcr3((uintptr_t) pt);
-        // The soft reboot process doesn't modify memory, so it's
-        // safe to pass `multiboot_info` on the kernel stack, even
-        // though it will get overwritten as the kernel runs.
-        static const char* binary_names[] = {
-            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-        };
-        assert(WEENSYOS_NBINARIES <= arraysize(binary_names));
-        uint32_t multiboot_info[5];
-        multiboot_info[0] = 4;
-        uintptr_t argument_ptr = (uintptr_t) binary_names[c - 'a'];
-        multiboot_info[4] = (uint32_t) argument_ptr;
-        asm volatile("movl $0x2BADB002, %%eax; jmp entry_from_boot"
-                     : : "b" (multiboot_info) : "memory");
-    } else if (c == 0x03 || c == 'q')
+    if (c == 0x03 || c == 'q')
         poweroff();
     return c;
 }

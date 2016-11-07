@@ -35,6 +35,13 @@ void* memset(void* v, int c, size_t n) {
     return v;
 }
 
+void* memchr(const void* v, int c, size_t n) {
+    for (unsigned char* p = (unsigned char*) v; n > 0; ++p, --n)
+        if (*p == (unsigned char) c)
+            return p;
+    return NULL;
+}
+
 size_t strlen(const char* s) {
     size_t n;
     for (n = 0; *s != '\0'; ++s)
