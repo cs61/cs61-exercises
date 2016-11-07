@@ -203,6 +203,15 @@ void exception(x86_64_registers* reg) {
             snprintf(name, sizeof(name), "Process %d", current->p_pid);
         else
             strcpy(name, "Kernel");
+	if (reg->reg_err & PFERR_USER) {
+		uintptr_t p = page_alloc_unused();
+		// Check if it's on the stack
+		if (virtual_memory_map(current->p_pagetable,
+		(addr & ~(PAGESIZE - 1)), p, PAGESIZE, 
+		PTE_P | PTE_U | PTE_W, NULL) !=0)
+			 panic("Adding page failed");
+		break;
+	}
 
         error_printf(CPOS(23, 0), 0xC000,
                      "%s page fault for %p (%s %s, rip=%p)!\n",
