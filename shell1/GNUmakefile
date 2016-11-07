@@ -1,6 +1,5 @@
 PROGRAMS = forkmix forkmix2 manyfork \
-	pipedemo pipesizer \
-	filtermultiples primesieve
+	pipedemo pipesizer
 
 all: $(PROGRAMS)
 
