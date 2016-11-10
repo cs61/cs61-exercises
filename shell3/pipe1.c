@@ -6,7 +6,8 @@
 #include <string.h>
 #include <unistd.h>
 
-// In this one, we close the write end of the pipe in the child
+// In this one, we close the child's write descriptor, so it should exit
+// when the parent closes its write.
 int main(int argc, char *argv[]) {
 	(void)argc;
 	(void)argv;
@@ -34,6 +35,7 @@ int main(int argc, char *argv[]) {
 		printf("\n");
 	} else if (p > 0) {
 		// Parent -- will be writer
+		close(pipefd[0]);
 		printf("Parent(%d)\n", mypid);
 		char *buf = "Message from parent to child\n";
 		ssize_t len = (ssize_t)strlen(buf);

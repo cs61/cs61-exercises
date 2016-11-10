@@ -6,9 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 
-// In this one, we close the write end of the pipe in the child
-// In this one, we close the extra read end too AND we make the pipe
-// connect stdout to stdin.
+// Proper pipe hygiene and connecting to stdin/stdout
 int main(int argc, char *argv[]) {
 	(void)argc;
 	(void)argv;
