@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
 	// We want the parent and child to share the file descriptor
 	// so we are going to open it BEFORE forking
-	int fd = open("data.out", O_CREAT | O_WRONLY, 0644);
+	int fd = open("data.out", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd < 0)
 		exit(1);
 
