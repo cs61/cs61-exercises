@@ -1,4 +1,4 @@
-PROGRAMS = dobby dobby-soln
+PROGRAMS = dobby
 all: $(PROGRAMS)
 
 O ?= 2
