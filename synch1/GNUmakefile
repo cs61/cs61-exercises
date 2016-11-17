@@ -1,4 +1,4 @@
-PROGRAMS = pingpong pingpong1 pingpong-mutex pingpong-cv
+PROGRAMS = pingpong pingpong-mutex pingpong-cv
 all: $(PROGRAMS)
 
 O ?= 2
