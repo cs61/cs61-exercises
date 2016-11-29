@@ -30,6 +30,7 @@ int main(int argc, char** argv) {
 
     int* cfds = (int*) malloc(max_conns * sizeof(int));
     int nconns;
+    double start_time = timestamp();
     for (nconns = 0; nconns < max_conns; ++nconns) {
         cfds[nconns] = socket(ai->ai_family, ai->ai_socktype, 0);
         if (cfds[nconns] < 0) {
@@ -43,10 +44,11 @@ int main(int argc, char** argv) {
             break;
         }
 
-        fprintf(stderr, "\r%d/%d connections", nconns, max_conns);
+        fprintf(stderr, "\r%d/%d connections (%g conns/s)    ",
+                nconns, max_conns, nconns / (timestamp() - start_time));
     }
 
-    fprintf(stderr, "Holding open %d connections\n", nconns);
+    fprintf(stderr, "\rHolding open %d connections\n", nconns);
     while (1)
         /* do nothing */;
 }
