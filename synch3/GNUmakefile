@@ -1,5 +1,8 @@
 SERVER_PROGRAMS = $(sort $(patsubst %.c,%,$(wildcard serviceserver-??.c)))
-PROGRAMS = serviceblaster serviceclient servicelookup serviceserver $(SERVER_PROGRAMS)
+SORT_PROGRAMS = $(sort $(patsubst %.c,%,$(wildcard sort-??.c)))
+SERVICE_PROGRAMS = serviceblaster serviceclient servicelookup serviceserver \
+	$(SERVER_PROGRAMS)
+PROGRAMS = $(SERVICE_PROGRAMS) $(SORT_PROGRAMS)
 all: $(PROGRAMS)
 
 O ?= 2
@@ -9,7 +12,10 @@ include ../common/rules.mk
 %.o: %.c GNUmakefile $(BUILDSTAMP)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPCFLAGS) $(O) -o $@ -c $<
 
-$(PROGRAMS): %: %.o
+$(SERVICE_PROGRAMS): %: %.o
+	$(CC) $(CFLAGS) $(O) -o $@ $^
+
+$(SORT_PROGRAMS): %: %.o linereader.o
 	$(CC) $(CFLAGS) $(O) -o $@ $^
 
 
