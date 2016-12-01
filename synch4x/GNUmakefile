@@ -1,4 +1,4 @@
-PROGRAMS = spy61
+PROGRAMS = spy61 spy61x
 all: $(PROGRAMS)
 
 O ?= 2
