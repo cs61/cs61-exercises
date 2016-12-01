@@ -20,7 +20,7 @@ static void* sort_lines(void* arg) {
         pthread_mutex_lock(&mutex);
         if (cur_nthreads < MAX_NTHREADS) {
             method = 1;
-            cur_nthreads += 2;
+            cur_nthreads += 1;
             if (cur_nthreads > max_nthreads)
                 max_nthreads = cur_nthreads;
         } else
@@ -31,19 +31,18 @@ static void* sort_lines(void* arg) {
             lineset left, right;
             split_lines(&left, &right, ls);
 
-            pthread_t left_thread, right_thread;
+            pthread_t left_thread;
             int r1 = pthread_create(&left_thread, NULL, &sort_lines, &left);
-            int r2 = pthread_create(&right_thread, NULL, &sort_lines, &right);
-            assert(r1 == 0 && r2 == 0);
+            assert(r1 == 0);
 
+            sort_lines(&right);
             r1 = pthread_join(left_thread, NULL);
-            r2 = pthread_join(right_thread, NULL);
-            assert(r1 == 0 && r2 == 0);
+            assert(r1 == 0);
 
             merge_lines(ls, &left, &right);
 
             pthread_mutex_lock(&mutex);
-            cur_nthreads -= 2;
+            cur_nthreads -= 1;
             pthread_mutex_unlock(&mutex);
         } else
             qsort(ls->lines, lineset_size(ls), sizeof(line), line_compare);

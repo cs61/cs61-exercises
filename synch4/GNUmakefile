@@ -1,5 +1,6 @@
 SORT_PROGRAMS = $(sort $(patsubst %.c,%,$(wildcard sort-??.c)))
-PROGRAMS = $(SORT_PROGRAMS) incr
+INCR_PROGRAMS = incr incrlock incrcmpxchg
+PROGRAMS = $(SORT_PROGRAMS) $(INCR_PROGRAMS)
 all: $(PROGRAMS)
 
 O ?= 2
@@ -12,7 +13,7 @@ include ../common/rules.mk
 $(SORT_PROGRAMS): %: %.o linereader.o
 	$(CC) $(CFLAGS) $(O) -o $@ $^
 
-incr: incr.c
+$(INCR_PROGRAMS): %: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPCFLAGS) -O0 -o $@ $<
 
 

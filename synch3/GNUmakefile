@@ -1,8 +1,7 @@
 SERVER_PROGRAMS = $(sort $(patsubst %.c,%,$(wildcard serviceserver-??.c)))
-SORT_PROGRAMS = $(sort $(patsubst %.c,%,$(wildcard sort-??.c)))
 SERVICE_PROGRAMS = serviceblaster serviceclient servicelookup serviceserver \
 	$(SERVER_PROGRAMS)
-PROGRAMS = $(SERVICE_PROGRAMS) $(SORT_PROGRAMS)
+PROGRAMS = $(SERVICE_PROGRAMS)
 all: $(PROGRAMS)
 
 O ?= 2
@@ -15,12 +14,9 @@ include ../common/rules.mk
 $(SERVICE_PROGRAMS): %: %.o
 	$(CC) $(CFLAGS) $(O) -o $@ $^
 
-$(SORT_PROGRAMS): %: %.o linereader.o
-	$(CC) $(CFLAGS) $(O) -o $@ $^
-
 
 clean:
-	rm -f *.o *.core $(PROGRAMS)
+	rm -f *.o *.core $(PROGRAMS) sort-[0-9][0-9]
 	rm -rf $(DEPSDIR) *.dSYM
 
 .PHONY: all clean
